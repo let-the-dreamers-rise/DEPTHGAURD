@@ -4,16 +4,13 @@
   "buildCommand": "npm run build",
   "installCommand": "npm install",
   "framework": null,
-  "env": {
-    "NODE_OPTIONS": "--experimental-strip-types"
-  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/api" }
   ],
   "functions": {
     "api/index.ts": {
       "maxDuration": 300,
-      "includeFiles": "{dist/**,server/**}"
+      "includeFiles": "dist/**"
     }
   }
 }

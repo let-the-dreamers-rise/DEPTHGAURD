@@ -2,6 +2,7 @@ import './env.ts'
 import express from 'express'
 import cors from 'cors'
 import path from 'path'
+import { existsSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { runAgentScan } from './scan-agent.ts'
 import { brightDataConfigured, unlockerConfigured, brightDataMode } from './brightdata.ts'
@@ -17,6 +18,20 @@ const app = express()
 
 app.use(cors())
 app.use(express.json({ limit: '2mb' }))
+
+let cacheWarming = false
+function ensureDemoCache() {
+  if (cacheWarming || getDemoCache() || !brightDataConfigured()) return
+  cacheWarming = true
+  warmDemoCache((pkg, eco) => runAgentScan(pkg, eco))
+    .catch(() => {})
+    .finally(() => { cacheWarming = false })
+}
+
+app.use((_req, _res, next) => {
+  ensureDemoCache()
+  next()
+})
 
 app.get('/api/health', (_req, res) => {
   res.json({
@@ -157,26 +172,24 @@ app.get('/api/agent/scan/:pkg', async (req, res) => {
 })
 
 // Production: serve Vite build
-const distPath = path.join(__dirname, '..', 'dist')
+function resolveDistPath(): string {
+  const candidates = [
+    path.join(process.cwd(), 'dist'),
+    path.join(__dirname, '..', 'dist'),
+    path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'dist'),
+  ]
+  for (const candidate of candidates) {
+    if (existsSync(path.join(candidate, 'index.html'))) return candidate
+  }
+  return candidates[0]
+}
+
+const distPath = resolveDistPath()
 app.use(express.static(distPath))
 app.get(/^(?!\/api).*/, (_req, res) => {
   res.sendFile(path.join(distPath, 'index.html'), (err) => {
     if (err) res.status(404).json({ error: 'Build frontend first: npm run build' })
   })
-})
-
-let cacheWarming = false
-function ensureDemoCache() {
-  if (cacheWarming || getDemoCache() || !brightDataConfigured()) return
-  cacheWarming = true
-  warmDemoCache((pkg, eco) => runAgentScan(pkg, eco))
-    .catch(() => {})
-    .finally(() => { cacheWarming = false })
-}
-
-app.use((_req, _res, next) => {
-  ensureDemoCache()
-  next()
 })
 
 export default app

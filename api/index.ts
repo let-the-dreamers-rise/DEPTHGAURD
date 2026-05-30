@@ -1,7 +1,8 @@
+import serverless from 'serverless-http'
 import app from '../server/index.ts'
 
 export const config = {
   maxDuration: 300,
 }
 
-export default app
+export default serverless(app)
