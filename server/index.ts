@@ -1,5 +1,5 @@
 import './env.ts'
-import express from 'express'
+import express, { type Request, type Response, type NextFunction } from 'express'
 import cors from 'cors'
 import path from 'path'
 import { existsSync } from 'fs'
@@ -29,7 +29,9 @@ function ensureDemoCache() {
 }
 
 app.use((_req, _res, next) => {
-  setImmediate(() => ensureDemoCache())
+  if (!process.env.VERCEL) {
+    setImmediate(() => ensureDemoCache())
+  }
   next()
 })
 
@@ -94,10 +96,11 @@ app.get('/api/agent/scan/stream', async (req, res) => {
   res.end()
 })
 
-app.get('/api/demo/cache', (_req, res) => {
+app.get('/api/demo/cache', async (_req, res) => {
   const cached = getDemoCache()
   if (!cached) {
-    res.status(404).json({ ready: false, message: 'Demo cache warming — try again in ~60s' })
+    if (brightDataConfigured()) ensureDemoCache()
+    res.status(404).json({ ready: false, message: 'Demo cache warming — run a scan or retry in ~90s' })
     return
   }
   res.json(cached)
@@ -190,6 +193,13 @@ app.get(/^(?!\/api).*/, (_req, res) => {
   res.sendFile(path.join(distPath, 'index.html'), (err) => {
     if (err) res.status(404).json({ error: 'Build frontend first: npm run build' })
   })
+})
+
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  console.error('[DepthGuard] express error:', err)
+  if (!res.headersSent) {
+    res.status(500).json({ error: err instanceof Error ? err.message : String(err) })
+  }
 })
 
 export default app

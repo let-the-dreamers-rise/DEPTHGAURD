@@ -1,24 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
   "buildCommand": "npm run build",
   "installCommand": "npm install",
   "framework": null,
   "rewrites": [
-    {
-      "source": "/api/health",
-      "destination": "/api/health"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/api"
-    }
+    { "source": "/(.*)", "destination": "/api/[[...path]]" }
   ],
   "functions": {
-    "api/health.ts": {
-      "maxDuration": 10
-    },
-    "api/index.ts": {
+    "api/[[...path]].ts": {
       "maxDuration": 300,
       "includeFiles": "dist/**"
     }
