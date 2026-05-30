@@ -1,0 +1,19 @@
+services:
+  depthguard:
+    build: .
+    container_name: depthguard
+    ports:
+      - "8787:8787"
+    env_file:
+      - .env
+      - .env.secrets
+    environment:
+      - NODE_ENV=production
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8787/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: depthguard
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_TLS_REJECT_UNAUTHORIZED
+        value: "0"
+      - key: BRIGHTDATA_API_KEY
+        sync: false
+      - key: BRIGHTDATA_SERP_ZONE
+        sync: false
+      - key: BRIGHTDATA_UNLOCKER_ZONE
+        sync: false
+      - key: AIML_API_KEY
+        sync: false
+      - key: SLACK_WEBHOOK_URL
+        sync: false
