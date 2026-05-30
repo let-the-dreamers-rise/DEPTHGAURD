@@ -159,7 +159,11 @@ export async function fetchDemoCache(): Promise<AgentScanResult | null> {
 }
 
 export function judgeReportUrl(pkg: string, ecosystem = 'npm'): string {
-  return `${API_BASE}/api/report/${encodeURIComponent(pkg)}?ecosystem=${encodeURIComponent(ecosystem)}`
+  return `${API_BASE}/api/report?pkg=${encodeURIComponent(pkg)}&ecosystem=${encodeURIComponent(ecosystem)}`
+}
+
+export function siemExportUrl(pkg: string, ecosystem = 'npm'): string {
+  return `${API_BASE}/api/siem?pkg=${encodeURIComponent(pkg)}&ecosystem=${encodeURIComponent(ecosystem)}`
 }
 
 export async function checkHealth(): Promise<{ brightData: boolean; aiml: boolean; slack: boolean; brightDataMode?: string }> {

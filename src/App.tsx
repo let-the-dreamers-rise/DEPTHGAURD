@@ -675,10 +675,10 @@ function ScanningTab({ onScan, autoRunTrigger }: {
               <span className="pill warn"><AlertTriangle size={13} />Slack: {slackAlert?.reason ?? 'not configured — add SLACK_WEBHOOK_URL'}</span>
             )}
             <button type="button" className="btn-primary" onClick={() => {
-              window.open(`/api/siem/${encodeURIComponent(pkg)}?ecosystem=${encodeURIComponent(eco)}`, '_blank')
+              window.open(`/api/siem?pkg=${encodeURIComponent(pkg)}&ecosystem=${encodeURIComponent(eco)}`, '_blank')
             }}><FileText size={14} />Export SIEM JSON</button>
             <button type="button" className="btn-ghost" onClick={() => {
-              window.open(`/api/report/${encodeURIComponent(pkg)}?ecosystem=${encodeURIComponent(eco)}`, '_blank')
+              window.open(`/api/report?pkg=${encodeURIComponent(pkg)}&ecosystem=${encodeURIComponent(eco)}`, '_blank')
             }}><FileText size={14} />Judge Report (MD)</button>
           </div>
         </div>

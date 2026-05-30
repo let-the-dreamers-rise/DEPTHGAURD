@@ -5,6 +5,8 @@
   "framework": null,
   "outputDirectory": "dist",
   "rewrites": [
+    { "source": "/api/report/:pkg", "destination": "/api/report?pkg=:pkg" },
+    { "source": "/api/siem/:pkg", "destination": "/api/siem?pkg=:pkg" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "functions": {
