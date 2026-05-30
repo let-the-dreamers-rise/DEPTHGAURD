@@ -3,17 +3,18 @@
   "buildCommand": "npm run build",
   "installCommand": "npm install",
   "framework": null,
+  "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/api/health", "destination": "/api/health" },
-    { "source": "/(.*)", "destination": "/api" }
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "functions": {
-    "api/health.ts": {
-      "maxDuration": 10
-    },
-    "api/index.ts": {
+    "api/**/*.ts": {
       "maxDuration": 300,
       "includeFiles": "dist/**"
+    },
+    "api/health.ts": {
+      "maxDuration": 10
     }
   }
 }
