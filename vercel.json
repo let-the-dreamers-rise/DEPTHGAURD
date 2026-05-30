@@ -5,16 +5,11 @@
   "framework": null,
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "functions": {
     "api/**/*.ts": {
-      "maxDuration": 300,
-      "includeFiles": "dist/**"
-    },
-    "api/health.ts": {
-      "maxDuration": 10
+      "maxDuration": 300
     }
   }
 }
