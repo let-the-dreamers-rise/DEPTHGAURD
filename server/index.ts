@@ -29,7 +29,7 @@ function ensureDemoCache() {
 }
 
 app.use((_req, _res, next) => {
-  ensureDemoCache()
+  setImmediate(() => ensureDemoCache())
   next()
 })
 
