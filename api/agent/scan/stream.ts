@@ -1,5 +1,5 @@
 import '../../../server/env.ts'
-import { runAgentScan } from '../../server/scan-agent.ts'
+import { runAgentScan } from '../../../server/scan-agent.ts'
 
 export const config = {
   maxDuration: 300,
@@ -11,7 +11,6 @@ export default async function handler(
     status: (n: number) => { json: (b: unknown) => void; end: () => void }
     setHeader: (k: string, v: string) => void
     write: (chunk: string) => void
-    flushHeaders?: () => void
   }
 ) {
   if (req.method !== 'GET') {
@@ -28,10 +27,10 @@ export default async function handler(
   }
 
   try {
-    res.setHeader('Content-Type', 'text/event-stream')
+    res.setHeader('Content-Type', 'text/event-stream; charset=utf-8')
     res.setHeader('Cache-Control', 'no-cache, no-transform')
     res.setHeader('Connection', 'keep-alive')
-    if (typeof res.flushHeaders === 'function') res.flushHeaders()
+    res.setHeader('X-Accel-Buffering', 'no')
 
     const send = (event: string, data: unknown) => {
       res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`)
@@ -44,7 +43,9 @@ export default async function handler(
     res.status(200).end()
   } catch (err) {
     console.error('[agent/scan/stream]', err)
-    res.write(`event: error\ndata: ${JSON.stringify({ error: String(err) })}\n\n`)
+    try {
+      res.write(`event: error\ndata: ${JSON.stringify({ error: String(err) })}\n\n`)
+    } catch { /* ignore */ }
     res.status(500).end()
   }
 }
