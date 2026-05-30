@@ -50,8 +50,8 @@ export interface ClassifiedSignal {
   snippet: string
   source: 'serp' | 'unlocker'
   extractedText?: string
-  aiRelevance: number
-  aiVerdict: string
+  aiRelevance?: number
+  aiVerdict?: string
 }
 
 export async function generateThreatBrief(input: {

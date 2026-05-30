@@ -122,7 +122,7 @@ export async function runAgentScan(
       const t0 = Date.now()
       const { evidence, stats } = await gatherWebEvidence(packageName, ecosystem)
       serpStats = stats
-      webSignals = evidence
+      webSignals = evidence as WebSignal[]
       steps[2].duration = Date.now() - t0
       steps[2].status = 'done'
       steps[2].result = { serpResults: evidence.length, queriesRun: stats.queriesRun, sources: stats.sources }
