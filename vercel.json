@@ -4,10 +4,18 @@
   "installCommand": "npm install",
   "framework": null,
   "rewrites": [
-    { "source": "/(.*)", "destination": "/api/[[...path]]" }
+    { "source": "/api/health", "destination": "/api/health" },
+    { "source": "/(.*)", "destination": "/api" }
   ],
   "functions": {
-    "api/[[...path]].ts": {
+    "api/health.ts": {
+      "maxDuration": 10
+    },
+    "api/index.ts": {
+      "maxDuration": 300,
+      "includeFiles": "dist/**"
+    },
+    "api/[...path].ts": {
       "maxDuration": 300,
       "includeFiles": "dist/**"
     }
