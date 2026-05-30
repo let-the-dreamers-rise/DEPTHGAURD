@@ -1,16 +1,22 @@
-﻿{
+{
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "buildCommand": "npm run build",
   "installCommand": "npm install",
   "framework": null,
   "rewrites": [
-    { "source": "/(.*)", "destination": "/api" }
+    {
+      "source": "/(.*)",
+      "destination": "/api"
+    }
   ],
   "functions": {
     "api/index.ts": {
       "maxDuration": 300,
-      "includeFiles": "dist/**"
+      "includeFiles": "{dist/**,server/**}"
     }
+  },
+  "env": {
+    "NODE_OPTIONS": "--experimental-strip-types"
   }
 }
